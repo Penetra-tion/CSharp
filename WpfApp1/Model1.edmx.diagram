@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="a115a4b14af74872992433da5d30ef06" Name="Diagram1">
+        <EntityTypeShape EntityType="MasterBankDBModel.Clients" Width="1.5" PointX="0.75" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="MasterBankDBModel.Credits" Width="1.5" PointX="5.25" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MasterBankDBModel.LoanApplicationHistory" Width="1.5" PointX="5.25" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MasterBankDBModel.LoanApplications" Width="1.5" PointX="3" PointY="8.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MasterBankDBModel.Reports" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MasterBankDBModel.Users" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="MasterBankDBModel.FK__Credits__ClientI__412EB0B6" ManuallyRouted="false" />
+        <AssociationConnector Association="MasterBankDBModel.FK__LoanAppli__Clien__3B75D760" ManuallyRouted="false" />
+        <AssociationConnector Association="MasterBankDBModel.FK__Credits__Applica__403A8C7D" ManuallyRouted="false" />
+        <AssociationConnector Association="MasterBankDBModel.FK__LoanAppli__LoanA__440B1D61" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

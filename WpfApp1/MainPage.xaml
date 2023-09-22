@@ -1,0 +1,764 @@
+﻿<Window x:Class="WpfApp1.MainPage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="MainPage"
+        Height="450"
+        Width="800"
+        Icon="Images/bank.png"
+        WindowStyle="None"
+        Background="Transparent"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" StrokeThickness="1"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
+        <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+        <Style x:Key="LoginBtnStyle" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" CornerRadius="10" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <ControlTemplate x:Key="{x:Static MenuItem.TopLevelHeaderTemplateKey}" TargetType="{x:Type MenuItem}">
+            <Border Name="Border" >
+                <Grid>
+                    <ContentPresenter Margin="6,3,6,3" ContentSource="Header" RecognizesAccessKey="True" />
+                    <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsSubmenuOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
+                        <Border Name="SubmenuBorder" SnapsToDevicePixels="True" Background="Transparent">
+                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+                        </Border>
+                    </Popup>
+                </Grid>
+            </Border>
+        </ControlTemplate>
+    </Window.Resources>
+    <Canvas>
+        <Grid Background="#20b5f5"
+              HorizontalAlignment="Left"
+              Height="450"
+              VerticalAlignment="Center"
+              Width="800">
+            <Button x:Name="CloseBtn" 
+                MouseEnter="CloseBtn_MouseEnter"
+                MouseLeave="CloseBtn_MouseLeave"
+                Click="CloseBtn_Click"
+                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" BorderThickness="0"
+                Height="25"
+                Width="25"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top" Margin="0,10,10,0">
+                <Image Source="Images/x.png"/>
+            </Button>
+            <Menu FontSize="14"
+                  Margin="11,11,35,0"
+                  VerticalAlignment="Top"
+                  Height="25"
+                  Background="Transparent"
+                  Foreground="#FFF0F7FA">
+                <MenuItem Header="Клиенты"
+                          LostFocus="ShoClientsMenuBtn_LostFocus"
+                          MouseEnter="CloseBtn_MouseEnter"
+                          MouseLeave="CloseBtn_MouseLeave">
+                    <MenuItem Header="Новый"
+                              x:Name="NewClientMenuBtn"
+                              MouseEnter="CloseBtn_MouseEnter"
+                              Click="NewClientMenuBtn_Click"
+                              MouseLeave="CloseBtn_MouseLeave">
+                    </MenuItem>
+                    <MenuItem x:Name="ShoClientsMenuBtn"
+                              Header="Просмотр"
+                              MouseEnter="CloseBtn_MouseEnter"
+                              Click="ShoClientsMenuBtn_Click"
+                              MouseLeave="CloseBtn_MouseLeave">
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="Кредиты"
+                          LostFocus="ShoClientsMenuBtn_LostFocus"
+                          MouseEnter="CloseBtn_MouseEnter"
+                          MouseLeave="CloseBtn_MouseLeave" Margin="10,0,0,0">
+                    <MenuItem Header="Новый"
+                              MouseEnter="CloseBtn_MouseEnter"
+                              MouseLeave="CloseBtn_MouseLeave">
+                    </MenuItem>
+                    <MenuItem Header="Калькулятор"
+                              x:Name="CalculateMenuBtn"
+                              Click="CalculateMenuBtn_Click"
+                              LostFocus="ShoClientsMenuBtn_LostFocus"
+                              MouseEnter="CloseBtn_MouseEnter"
+                              MouseLeave="CloseBtn_MouseLeave">
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="Отчёты"
+                          LostFocus="ShoClientsMenuBtn_LostFocus"
+                          MouseEnter="CloseBtn_MouseEnter"
+                          MouseLeave="CloseBtn_MouseLeave" Margin="10,0,0,0">
+                </MenuItem>
+                <MenuItem Header="Заявки"
+                          LostFocus="ShoClientsMenuBtn_LostFocus"
+                          MouseEnter="CloseBtn_MouseEnter"
+                          MouseLeave="CloseBtn_MouseLeave" Margin="10,0,0,0">
+                    <MenuItem Header="Просмотр"
+                              MouseEnter="CloseBtn_MouseEnter"
+                              MouseLeave="CloseBtn_MouseLeave">
+                    </MenuItem>
+                    <MenuItem Header="Создание"
+                              x:Name="Newapplication"
+                              Click="Newapplication_Click"
+                              MouseEnter="CloseBtn_MouseEnter"
+                              MouseLeave="CloseBtn_MouseLeave">
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="О программе"
+                          LostFocus="ShoClientsMenuBtn_LostFocus"
+                          x:Name="InfoMenuBtn"
+                          Click="InfoMenuBtn_Click"
+                          MouseEnter="CloseBtn_MouseEnter"
+                          MouseLeave="CloseBtn_MouseLeave" Margin="10,0,0,0">
+                </MenuItem>
+            </Menu>
+            <Grid  x:Name="NewApplicationPanel"
+                  Visibility="Collapsed"
+                  HorizontalAlignment="Center"
+                  Width="770"
+                  Margin="0,35,0,10">
+                <TextBlock Text="Новая заявка"    
+                   Foreground="#FFF0F7FA"
+                   FontFamily="Roboto Light"
+                   FontSize="22"
+                   VerticalAlignment="Top" 
+                   HorizontalAlignment="Center"
+                   FontWeight="Bold"
+                   Margin="0,00,0,0"/>
+                <TextBlock
+                 Height="28"
+                 Background="Transparent"
+                 Width="380"
+                 HorizontalAlignment="Left"
+                 Margin="0,40,0,0"
+                 VerticalAlignment="Top"
+                 FontSize="14"
+                  Foreground="#FFF0F7FA" Text="Клиент:" FontWeight="Bold"/>
+                <ComboBox
+                 Height="28"
+                 Background="Transparent"
+                 Width="380"
+                 HorizontalAlignment="Left"
+                 Margin="0,60,0,0"
+                 BorderBrush="#FFF0F7FA"
+                 BorderThickness="0,0,0,2"
+                 VerticalAlignment="Top"
+                 VerticalContentAlignment="Bottom"
+                 FontSize="14"
+                  Foreground="#FFF0F7FA"/>
+                <TextBox 
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Right"
+                    Margin="0,60,0,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA"
+                    SelectionTextBrush="#FFF0F7FA"/>
+                <TextBox 
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Left"
+                    Margin="0,140,0,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA"
+                    SelectionTextBrush="#FFF0F7FA"/>
+                <TextBox 
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Right"
+                    Margin="0,140,0,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA"
+                    SelectionTextBrush="#FFF0F7FA"/>
+                <DatePicker 
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Left"
+                    Margin="0,220,0,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="Black"/>
+                <Button Style="{DynamicResource LoginBtnStyle}" Content="Создать"
+                Background="Transparent"
+                HorizontalAlignment="Center"
+                Margin="0,340,0,0"
+                MouseEnter="CloseBtn_MouseEnter"
+                MouseLeave="CloseBtn_MouseLeave"
+                Click="AddBtn_Click"
+                VerticalAlignment="Top"
+                Height="40"
+                Width="145"
+                FontSize="14"
+                BorderBrush="#FFF0F7FA"    
+                Foreground="#FFF0F7FA"
+                BorderThickness="2"
+                FontWeight="Bold">
+                </Button>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Right"
+                    Margin="0,40,0,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Сумма:" FontWeight="Bold"/>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Left"
+                    Margin="0,120,0,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Цель кредита:" FontWeight="Bold"/>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Right"
+                    Margin="0,120,0,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Статус:" FontWeight="Bold"/>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Left"
+                    Margin="0,200,0,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Дата заявки:" FontWeight="Bold"/>
+            </Grid>
+            <Grid x:Name="CalculatePanel"
+                  Visibility="Collapsed"
+                  HorizontalAlignment="Center"
+                  Width="770"
+                  Margin="0,35,0,10">
+                <TextBlock Text="Кредитный калькулятор"    
+                   Foreground="#FFF0F7FA"
+                   FontFamily="Roboto Light"
+                   FontSize="22"
+                   VerticalAlignment="Top" 
+                   HorizontalAlignment="Center"
+                   FontWeight="Bold"/>
+                <TextBox x:Name="LoanAmount"
+                    Height="28"
+                    Background="Transparent"
+                    Width="285"
+                    HorizontalAlignment="Left"
+                    Margin="16,60,0,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA"
+                    SelectionTextBrush="#FFF0F7FA"/>
+                <TextBox x:Name="LoanTerm"
+                    Height="28"
+                    Background="Transparent"
+                    Width="285"
+                    HorizontalAlignment="Left"
+                    Margin="16,140,0,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA"
+                    SelectionTextBrush="#FFF0F7FA"/>
+                <TextBox x:Name="InterestRate"
+                    Height="28"
+                    Background="Transparent"
+                    Width="285"
+                    HorizontalAlignment="Left"
+                    Margin="16,220,0,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA"
+                    SelectionTextBrush="#FFF0F7FA"/>
+                <TextBox x:Name="MonthlyPaymentAmount"
+                    Height="28"
+                    Background="Transparent"
+                    Width="302"
+                    HorizontalAlignment="Right"
+                    Margin="0,60,63,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA"
+                    SelectionTextBrush="#FFF0F7FA"/>
+                <TextBox x:Name="OverpaymentOfInterestOnTheLoan"
+                    Height="28"
+                    Background="Transparent"
+                    Width="302"
+                    HorizontalAlignment="Right"
+                    Margin="0,140,63,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA"
+                    SelectionTextBrush="#FFF0F7FA"/>
+                <TextBox x:Name="TotalOverpaymentForTheEntirePeriod"
+                    Height="28"
+                    Background="Transparent"
+                    Width="302"
+                    HorizontalAlignment="Right"
+                    Margin="0,220,63,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA"
+                    SelectionTextBrush="#FFF0F7FA"/>
+                <TextBlock
+                 Height="28"
+                 Background="Transparent"
+                 Width="380"
+                 HorizontalAlignment="Left"
+                 Margin="16,40,0,0"
+                 VerticalAlignment="Top"
+                 FontSize="14"
+                  Foreground="#FFF0F7FA" Text="Сумма кредита" FontWeight="Bold"/>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Left"
+                    Margin="16,120,0,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Срок кредита" FontWeight="Bold"/>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Left"
+                    Margin="16,200,0,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Процентная ставка" FontWeight="Bold"/>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="315"
+                    HorizontalAlignment="Right"
+                    Margin="0,40,50,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Сумма ежемесячного платежа" FontWeight="Bold"/>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="315"
+                    HorizontalAlignment="Right"
+                    Margin="0,120,50,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Переплата по процентам за кредит" FontWeight="Bold"/>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="315"
+                    HorizontalAlignment="Right"
+                    Margin="0,200,50,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Итоговая переплата за весь период" FontWeight="Bold"/>
+                <Button Style="{DynamicResource LoginBtnStyle}" Content="Рассчитать"
+                    x:Name="CalculateBtn"
+                Background="Transparent"
+                HorizontalAlignment="Center"
+                Margin="0,330,0,0"
+                MouseEnter="CloseBtn_MouseEnter"
+                MouseLeave="CloseBtn_MouseLeave"
+                Click="CalculateBtn_Click"
+                VerticalAlignment="Top"
+                Height="40"
+                Width="144"
+                FontSize="14"
+                BorderBrush="#FFF0F7FA"    
+                Foreground="#FFF0F7FA"
+                BorderThickness="2"
+                FontWeight="Bold">
+                </Button>
+                <Label Content="₽" HorizontalAlignment="Left" Margin="300,65,0,0" VerticalAlignment="Top" Height="25" Foreground="#FFF0F7FA" FontSize="14"/>
+                <Label Content="мес." HorizontalAlignment="Left" Margin="300,145,0,0" VerticalAlignment="Top" Height="25" Foreground="#FFF0F7FA" FontSize="14"/>
+                <Label Content="% в год" HorizontalAlignment="Left" Margin="300,225,0,0" VerticalAlignment="Top" Height="30" Foreground="#FFF0F7FA" FontSize="14"/>
+            </Grid>
+            <Grid x:Name="ShowClientsPanel"
+                  Visibility="Collapsed"
+                  HorizontalAlignment="Center"
+                  Width="770"
+                  Margin="0,35,0,10">
+                <TextBlock Text="Список клиентов"    
+                   Foreground="#FFF0F7FA"
+                   FontFamily="Roboto Light"
+                   FontSize="22"
+                   VerticalAlignment="Top" 
+                   HorizontalAlignment="Center"
+                   FontWeight="Bold"/>
+                <DataGrid Margin="0,25,0,0"
+                          x:Name="ClientList"
+                          BorderThickness="2"
+                           Foreground="Black"
+                           HorizontalAlignment="Center"
+                           Background="Transparent"
+                           BorderBrush="Black"
+                           FontSize="20"
+                           VerticalAlignment="Top" MaxWidth="680">
+                    <DataGrid.Resources>
+                        <Style TargetType="{x:Type DataGridCell}">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="BorderBrush" Value="Black"/>
+                            <Setter Property="Padding" Value="2"/>
+                        </Style>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="BorderBrush" Value="Black"/>
+                            <Setter Property="Padding" Value="2"/>
+                        </Style>
+                        <Style TargetType="{x:Type DataGridRow}">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="BorderBrush" Value="Black"/>
+                        </Style>
+                    </DataGrid.Resources>
+                    <UIElement.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </UIElement.RenderTransform>
+                </DataGrid>
+            </Grid>
+            <Grid x:Name="AddClientPanel"
+                  Visibility="Collapsed"
+                  HorizontalAlignment="Center"
+                  Width="770"
+                  Margin="0,35,0,10">
+                <TextBlock Text="Новый клиент"    
+                   Foreground="#FFF0F7FA"
+                   FontFamily="Roboto Light"
+                   FontSize="22"
+                   VerticalAlignment="Top" 
+                   HorizontalAlignment="Center"
+                   FontWeight="Bold"
+                   Margin="0,00,0,0"/>
+                <TextBlock
+                 Height="28"
+                 Background="Transparent"
+                 Width="380"
+                 HorizontalAlignment="Left"
+                 Margin="0,40,0,0"
+                 VerticalAlignment="Top"
+                 FontSize="14"
+                  Foreground="#FFF0F7FA" Text="Введите имя" FontWeight="Bold"/>
+                <TextBox x:Name="FirstName"
+                 Height="28"
+                 Background="Transparent"
+                 Width="380"
+                 HorizontalAlignment="Left"
+                 Margin="0,60,0,0"
+                 BorderBrush="#FFF0F7FA"
+                 BorderThickness="0,0,0,2"
+                 VerticalAlignment="Top"
+                 VerticalContentAlignment="Bottom"
+                 FontSize="14"
+                  Foreground="#FFF0F7FA"
+                     SelectionTextBrush="#FFF0F7FA"/>
+                <TextBox x:Name="Phone"
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Left"
+                    Margin="0,140,0,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA"
+                    SelectionTextBrush="#FFF0F7FA"/>
+                <TextBox x:Name="CardNumber"
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Left"
+                    Margin="0,220,0,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA"
+                    SelectionTextBrush="#FFF0F7FA"/>
+                <TextBox x:Name="PassportNumber"
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Left"
+                    Margin="0,300,0,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA"
+                    SelectionTextBrush="#FFF0F7FA"/>
+                <TextBox x:Name="LastName"
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Right"
+                    Margin="0,60,0,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA"
+                    SelectionTextBrush="#FFF0F7FA"/>
+                <TextBox x:Name="Email"
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Right"
+                    Margin="0,140,0,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA"
+                    SelectionTextBrush="#FFF0F7FA"/>
+                <TextBox x:Name="PassportSeries"
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Right"
+                    Margin="0,220,0,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA"
+                    SelectionTextBrush="#FFF0F7FA"/>
+                <DatePicker x:Name="DateOfBirth"
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Right"
+                    Margin="0,300,0,0"
+                    BorderBrush="#FFF0F7FA"
+                    BorderThickness="0,0,0,2"
+                    VerticalAlignment="Top"
+                    VerticalContentAlignment="Bottom"
+                    FontSize="14"
+                    Foreground="Black"/>
+                <Button Style="{DynamicResource LoginBtnStyle}" Content="Добавить"
+                    x:Name="AddBtn"
+                Background="Transparent"
+                HorizontalAlignment="Center"
+                Margin="0,340,0,0"
+                MouseEnter="CloseBtn_MouseEnter"
+                MouseLeave="CloseBtn_MouseLeave"
+                Click="AddBtn_Click"
+                VerticalAlignment="Top"
+                Height="40"
+                Width="145"
+                FontSize="14"
+                BorderBrush="#FFF0F7FA"    
+                Foreground="#FFF0F7FA"
+                BorderThickness="2"
+                FontWeight="Bold">
+                </Button>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Right"
+                    Margin="0,40,0,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Введите фамилию" FontWeight="Bold"/>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Left"
+                    Margin="0,120,0,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Введите номер телефона" FontWeight="Bold"/>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Right"
+                    Margin="0,120,0,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Введите почту" FontWeight="Bold"/>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Left"
+                    Margin="0,200,0,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Введите номер карты" FontWeight="Bold"/>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Right"
+                    Margin="0,200,0,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Введите серию паспорта" FontWeight="Bold"/>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Left"
+                    Margin="0,280,0,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Введите номер паспорта" FontWeight="Bold"/>
+                <TextBlock
+                    Height="28"
+                    Background="Transparent"
+                    Width="380"
+                    HorizontalAlignment="Right"
+                    Margin="0,280,0,0"
+                    VerticalAlignment="Top"
+                    FontSize="14"
+                    Foreground="#FFF0F7FA" Text="Выберите дату рождения" FontWeight="Bold"/>
+            </Grid>
+        </Grid>
+        <Polygon Points="0,0 0,100 100,100"
+                     Fill="#FFF0F7FA"
+                     Canvas.Top="360"
+                     Height="90" Width="105"/>
+        <Polygon Points="100,0 100,100 0,100"
+                     Fill="#FFF0F7FA"
+                     Canvas.Left="700"
+                     Canvas.Top="350"/>
+        <Rectangle Height="375"
+                       Fill="#FFF0F7FA"
+                       Width="10"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"/>
+        <Rectangle Height="375"
+                       Fill="#FFF0F7FA"
+                       Width="10"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Canvas.Left="790"/>
+        <Rectangle Height="10"
+                       Canvas.Left="80"
+                       Canvas.Top="440"
+                        Fill="#FFF0F7FA"
+                       Width="635"
+                       VerticalAlignment="Top"
+                       HorizontalAlignment="Center"/>
+        <Rectangle Height="10"
+                       Canvas.Left="5"
+                       Fill="#FFF0F7FA"
+                       Width="790"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"/>
+    </Canvas>
+</Window>
